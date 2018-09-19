@@ -1,0 +1,5 @@
+kafka-python==1.4.3
+pkg-resources==0.0.0
+PyYAML==3.13
+redis==2.10.6
+simplejson==3.16.0

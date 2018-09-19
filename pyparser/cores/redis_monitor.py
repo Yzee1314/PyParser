@@ -5,24 +5,26 @@
 # @Author : PengYingzhi
 # @Date   : 9/10/2018, 4:58:07 PM
 
+import multiprocessing
 import time
 import traceback
 
+from pyparser.cores.layers.parse import ParseLayerProducer
 from pyparser.utils.redis import RedisManager
 from settings import REDIS_MONITOR_CONFIG
 
 
 class ConfigField:
 
-    class RedisInstance:
+    class RedisInstanceConfig:
         root = 'redis_instance_list'
         host = 'host'
         port = 'port'
         db = 'db'
 
-    class ParseLayerProducer:
+    class ParseLayerProducerConfig:
         root = 'parse_layer_config'
-        producer_uri = 'producer_uri'
+        servers = 'servers'
 
 
 class RedisMonitor(object):
@@ -38,10 +40,9 @@ class RedisMonitor(object):
         """
             Pop item from result queue
         """
-        if queue not in self.queue_pop_func:
-            queue_type = self.redis_conn.type(queue)
-            pop_func = self.redis_conn.lpop \
-                if queue_type == 'list' else self.redis.spop
+        queue_type = self.redis_conn.type(queue)
+        pop_func = self.redis_conn.lpop \
+            if queue_type == 'list' else self.redis.spop
         return pop_func(queue)
 
     def run(self):
@@ -91,38 +92,49 @@ class ItemRedisMonitorManager(object):
 
     def __init__(self):
         self.monitors = []
+        self.__init_redis_monitors()
 
     def __init_redis_monitors(self):
         """
             Init redis monitors
         """
         redis_instance_list = REDIS_MONITOR_CONFIG.get(
-            ConfigField.RedisInstance.root,
+            ConfigField.RedisInstanceConfig.root,
             []
         )
         if not redis_instance_list:
             redis_instance_list = [
                 {
-                    ConfigField.RedisInstance.host: 'localhost',
-                    ConfigField.RedisInstance.port: 6379,
-                    ConfigField.RedisInstance.db: 0
+                    ConfigField.RedisInstanceConfig.host: 'localhost',
+                    ConfigField.RedisInstanceConfig.port: 6379,
+                    ConfigField.RedisInstanceConfig.db: 0
                 }
             ]
         for redis_instance in redis_instance_list:
             parse_layer_producer_config = redis_instance.get(
-                ConfigField.ParseLayerProducer.root, {})
-            
+                ConfigField.ParseLayerProducerConfig.root, {})
+            servers = parse_layer_producer_config.get(
+                ConfigField.ParseLayerProducerConfig.servers,
+                ['localhost:9092']
+            )
+            parse_layer_producer = ParseLayerProducer(
+                bootstrap_servers=servers)
             monitor = ItemRedisMonitor(
                 host=redis_instance.get(
-                    ConfigField.RedisInstance.host, 'localhost'),
-                port=redis_instance.get(ConfigField.RedisInstance.port, 6379),
-                db=redis_instance.get(ConfigField.RedisInstance.db, 0)
+                    ConfigField.RedisInstanceConfig.host, 'localhost'),
+                port=redis_instance.get(
+                    ConfigField.RedisInstanceConfig.port, 6379),
+                db=redis_instance.get(ConfigField.RedisInstanceConfig.db, 0),
+                parse_layer_producer=parse_layer_producer
             )
-            monitor.run()
+            self.monitors.append(monitor)
 
     def run(self):
         """
             run monitors
         """
-        pass
-
+        pool = multiprocessing.Pool(len(self.monitors))
+        for monitor in self.monitors:
+            pool.apply_async(monitor.run)
+        pool.close()
+        pool.join()
