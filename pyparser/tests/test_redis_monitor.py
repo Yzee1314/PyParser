@@ -5,6 +5,9 @@
 # @Author : PengYingzhi
 # @Date   : 9/19/2018, 10:59:32 AM
 
+import os
+import sys
+sys.path.insert(0, os.getcwd())
 
 from pyparser.cores.redis_monitor import ItemRedisMonitorManager
 
