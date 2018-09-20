@@ -15,7 +15,7 @@ class BaseConsumer(KafkaConsumer):
 
     def __init__(self, *topics, **consumer_config):
         KafkaConsumer.__init__(
-            *topics, **consumer_config)
+            self, *topics, **consumer_config)
         self.sleep_interval = consumer_config.pop(
             'sleep_interval', 0.01)
         self.max_retry = consumer_config.pop(
