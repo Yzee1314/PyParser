@@ -13,13 +13,16 @@ from kafka import KafkaConsumer
 
 class BaseConsumer(KafkaConsumer):
 
-    def __init__(self, *topics, **consumer_config):
+    def __init__(self, *args, **kwargs):
         KafkaConsumer.__init__(
-            self, *topics, **consumer_config)
-        self.sleep_interval = consumer_config.pop(
+            self, *args, **kwargs)
+        self.sleep_interval = kwargs.pop(
             'sleep_interval', 0.01)
-        self.max_retry = consumer_config.pop(
+        self.max_retry = kwargs.pop(
             'max_retry', 3)
+        self.topics = kwargs.get(
+            'topics', None)
+        self.subscribe(topics=self.topics)
 
     def consume(self, item):
         """
