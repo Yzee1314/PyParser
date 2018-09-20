@@ -14,14 +14,14 @@ from kafka import KafkaConsumer
 class BaseConsumer(KafkaConsumer):
 
     def __init__(self, *args, **kwargs):
+        self.topics = kwargs.get(
+            'topics', None)
         KafkaConsumer.__init__(
             self, *args, **kwargs)
         self.sleep_interval = kwargs.pop(
             'sleep_interval', 0.01)
         self.max_retry = kwargs.pop(
             'max_retry', 3)
-        self.topics = kwargs.get(
-            'topics', None)
         self.subscribe(topics=self.topics)
 
     def consume(self, item):
@@ -38,7 +38,8 @@ class BaseConsumer(KafkaConsumer):
         has_retry = 0
         while True:
             try:
-                self.consume()
+                for item in self:
+                    self.consume(item)
             except Exception:
                 traceback.print_exc()
                 has_retry += 1
