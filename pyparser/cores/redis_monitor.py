@@ -32,9 +32,9 @@ class RedisMonitor(object):
     """
         Redis监控类基类
     """
-    def __init__(self, host, port, db, **args):
+    def __init__(self, host, port, db, **kwargs):
         self.redis_conn = RedisManager.get_redis_conn(
-            host, port, db, **args)
+            host, port, db, force_instance=True, **kwargs)
         self.queue_pop_func = {}
 
     def pop_item_from_queue(self, queue):

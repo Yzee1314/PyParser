@@ -22,12 +22,21 @@ class RedisManager(object):
         return key
 
     @classmethod
-    def get_redis_conn(cls, host='127.0.0.1', port=6379, db=0, **args):
+    def get_redis_conn(cls,
+                       host='127.0.0.1',
+                       port=6379,
+                       db=0,
+                       force_instance=False,
+                       **kwargs):
         """
-            获取redis连接
+            get redis client
         """
+        if force_instance:
+            return redis.Redis(
+                host, port, db, decode_responses=True)
         unikey = cls.get_instance_unikey(host, port, db)
         if unikey not in cls.instances:
-            conn = redis.Redis(host, port, db, decode_responses=True, **args)
+            conn = redis.Redis(
+                host, port, db, decode_responses=True, **kwargs)
             cls.instances[unikey] = conn
         return cls.instances[unikey]
