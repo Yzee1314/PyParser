@@ -12,6 +12,7 @@ import traceback
 
 from pyparser.cores.layers.parse import ParseLayerProducer
 from pyparser.utils.redis import RedisManager
+from pyparser.utils.sys import run_in_executor
 from settings import REDIS_MONITOR_CONFIG
 
 
@@ -130,6 +131,12 @@ class ItemRedisMonitorManager(object):
             )
             self.monitors.append(monitor)
 
+    def get_monitors(self):
+        """
+            return monitors
+        """
+        return self.monitors
+
     def run(self):
         """
             run monitors
@@ -138,4 +145,5 @@ class ItemRedisMonitorManager(object):
             max_workers=len(self.monitors)
         ) as executor:
             for monitor in self.monitors:
-                executor.submit(monitor.run)
+                executor.submit(
+                    run_in_executor(monitor))

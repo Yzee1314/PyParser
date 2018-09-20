@@ -15,3 +15,10 @@ def run_in_subprocess(func, *args, **kwargs):
     process.daemon = True
     process.start()
     return process
+
+
+def run_in_executor(obj, *args, **kwargs):
+    """
+        run in pool executor
+    """
+    obj.run()
