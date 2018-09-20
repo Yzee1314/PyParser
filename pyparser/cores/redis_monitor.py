@@ -5,7 +5,8 @@
 # @Author : PengYingzhi
 # @Date   : 9/10/2018, 4:58:07 PM
 
-import multiprocessing
+
+from concurrent.futures import ProcessPoolExecutor
 import time
 import traceback
 
@@ -133,8 +134,8 @@ class ItemRedisMonitorManager(object):
         """
             run monitors
         """
-        pool = multiprocessing.Pool(len(self.monitors))
-        for monitor in self.monitors:
-            pool.apply_async(monitor.run)
-        pool.close()
-        pool.join()
+        with ProcessPoolExecutor(
+            max_workers=len(self.monitors)
+        ) as executor:
+            for monitor in self.monitors:
+                executor.submit(monitor.run)

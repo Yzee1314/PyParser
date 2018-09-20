@@ -85,8 +85,8 @@ class PersistContentConsumer(BaseConsumer):
     """
         Save the web content
     """
-    def __init__(self, **config):
-        super(PersistContentConsumer, self).__init__(**config)
+    def __init__(self, *args, **kwargs):
+        super(PersistContentConsumer, self).__init__(*args, **kwargs)
 
     def consume(self, item):
         """
@@ -99,8 +99,8 @@ class ParseConsumer(BaseConsumer):
     """
         Recevie the content and load the parse script to extract data
     """
-    def __init__(self, **config):
-        super(ParseConsumer, self).__init__(**config)
+    def __init__(self, *args, **kwargs):
+        super(ParseConsumer, self).__init__(*args, **kwargs)
 
     def consume(self, item):
         """

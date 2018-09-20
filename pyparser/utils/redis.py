@@ -14,7 +14,7 @@ class RedisManager(object):
     instances = {}
 
     @classmethod
-    def get_instance_unikey(host, port, db):
+    def get_instance_unikey(cls, host, port, db):
         """
             获取实例的唯一映射
         """
