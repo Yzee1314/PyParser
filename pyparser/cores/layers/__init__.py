@@ -14,7 +14,7 @@ from kafka import KafkaConsumer
 class BaseConsumer(KafkaConsumer):
 
     def __init__(self, *args, **kwargs):
-        self.topics = kwargs.get(
+        self.topics = kwargs.pop(
             'topics', None)
         KafkaConsumer.__init__(
             self, *args, **kwargs)
