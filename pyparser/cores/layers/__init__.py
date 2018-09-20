@@ -19,7 +19,7 @@ class BaseConsumer(KafkaConsumer):
         KafkaConsumer.__init__(
             self, *args, **kwargs)
         self.sleep_interval = kwargs.pop(
-            'sleep_interval', 0.01)
+            'sleep_interval', 1)
         self.max_retry = kwargs.pop(
             'max_retry', 3)
         self.subscribe(topics=self.topics)
@@ -39,7 +39,7 @@ class BaseConsumer(KafkaConsumer):
         while True:
             try:
                 for item in self:
-                    self.consume(item)
+                    self.consume(item.value)
             except Exception:
                 traceback.print_exc()
                 has_retry += 1
