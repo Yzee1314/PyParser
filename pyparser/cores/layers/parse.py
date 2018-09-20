@@ -92,7 +92,7 @@ class PersistContentConsumer(BaseConsumer):
         """
             consume
         """
-        pass
+        print('[PersistContentConsumer] ', item)
 
 
 class ParseConsumer(BaseConsumer):
@@ -106,4 +106,4 @@ class ParseConsumer(BaseConsumer):
         """
             consume
         """
-        pass
+        print('[ParseConsumer] ', item)
