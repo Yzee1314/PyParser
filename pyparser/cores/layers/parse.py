@@ -6,104 +6,113 @@
 # @Date   : 9/18/2018, 11:12:16 AM
 
 """
-    Parse Layer
+    Parse Layer, includes the following workers:
+        1. save worker
+        2. parse worker
 """
 
-from multiprocessing import Pool
 
-from kafka import (
-    KafkaProducer
-)
 import simplejson as json
 
-from . import BaseConsumer
-
-
-def value_serializer(obj):
-    """
-        value_serializer
-    """
-    return json.dumps(obj).encode('utf-8')
+from cores.celery_workers.save import save_to_local_file
+from cores.celery_workers.parser import parse
+from utils.logger import LoggerManager
 
 
 class ConfigField:
 
-    class PersistConfig:
-        root = 'persist_config'
-        is_persist = 'is_persist'
-        persist_type = 'persist_type'
+    class TaskConfig:
+        root = 'task_config'
+        app_id = 'app_id'
+        task_id = 'task_id'
+
+    class SaveConfig:
+        root = 'save_config'
+        need_save = 'need_save'
+        save_type = 'save_type'
 
     class ResultInfo:
         root = 'result_info'
+        url = 'url'
         uniqkey = 'uniqkey'
         content = 'content'
+        meta = 'meta'
+        timestamp = 'timestamp'
 
     class ParseConfig:
         root = 'parse_config'
         parse_template = 'parse_template'
 
 
-class Topics:
+class Values:
 
-    persist_content_topic = 'persist_content_topic'
-    parse_topic = 'parse_topic'
+    class SaveType:
+        local_file = 'local_file'
+        oss_file = 'oss_file'
 
 
 class ParseLayer(object):
 
-    def __init__(self, input_processor, ):
-        pass
+    def __init__(self):
+        self.logger = LoggerManager.get_logger(__file__)
 
     def input(self, item):
         """
             Parse layer input
         """
-        pass
-
-
-class ParseLayerProducer(KafkaProducer):
-
-    def __init__(self, **config):
-        super(ParseLayerProducer, self).__init__(
-            value_serializer=value_serializer,
-            **config
+        task_config = item.pop(
+            ConfigField.TaskConfig.root, {})
+        app_id = task_config.get(
+            ConfigField.TaskConfig.app_id, None)
+        task_id = task_config.get(
+            ConfigField.TaskConfig.task_id, None)
+        if not app_id or not task_config:
+            self.logger.info(
+                '[EmptyTaskConfig] {} {}'.format(task_id, app_id)
+            )
+            return
+        result_info = item.pop(
+            ConfigField.ResultInfo.root, {})
+        url = result_info.get(
+            ConfigField.ResultInfo.root, None)
+        unikey = result_info.get(
+            ConfigField.ResultInfo.uniqkey, None)
+        content = result_info.get(
+            ConfigField.ResultInfo.content, None)
+        meta = result_info.get(
+            ConfigField.ResultInfo.meta, None)
+        if not unikey or not content:
+            self.logger.info(
+                '[EmptyResultInfo] {} {}'.format(unikey, content)
+            )
+            return
+        persist_config = item.pop(
+            ConfigField.SaveConfig.root, {})
+        need_save = persist_config.get(
+            ConfigField.SaveConfig.need_save, True)
+        save_type = persist_config.get(
+            ConfigField.SaveConfig.save_type,
+            Values.SaveType.local_file
         )
+        if need_save:
+            if save_type == Values.SaveType.local_file:
+                save_to_local_file.apply_async(
+                    {
+                        'app_id': app_id,
+                        'task_id': task_id,
+                        'url': url,
+                        'unikey': unikey,
+                        'content': content,
+                        'meta': meta
+                    }
+                )
+            else:
+                self.logger.info(
+                    '[WrongSaveType] {}'.format(save_type)
+                )
 
-    def produce(self, item):
+    def output(self):
         """
-            Params:
-            * item:    (dict) - result
+            Parse layer output
         """
-        obj = json.loads(item)
-        persist_config = obj.get(ConfigField.PersistConfig.root, {})
-        if persist_config.pop(ConfigField.PersistConfig.is_persist, False):
-            self.send(Topics.persist_content_topic, obj)
-        self.send(Topics.parse_topic, obj)
-
-
-class PersistContentConsumer(BaseConsumer):
-    """
-        Save the web content
-    """
-    def __init__(self, *args, **kwargs):
-        super(PersistContentConsumer, self).__init__(*args, **kwargs)
-
-    def consume(self, item):
-        """
-            consume
-        """
-        print('[PersistContentConsumer] ', item)
-
-
-class ParseConsumer(BaseConsumer):
-    """
-        Recevie the content and load the parse script to extract data
-    """
-    def __init__(self, *args, **kwargs):
-        super(ParseConsumer, self).__init__(*args, **kwargs)
-
-    def consume(self, item):
-        """
-            consume
-        """
-        print('[ParseConsumer] ', item)
+        pass
