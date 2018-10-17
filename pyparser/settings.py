@@ -33,3 +33,10 @@ SAVE_WORKER_CONFIG = load_yaml_config(
         'save_worker.yaml'
     )
 )
+SCRIPT_MANAGER_CONFIG = load_yaml_config(
+    os.path.join(
+        PROJECT_PATH,
+        'configs',
+        'script_manager.yaml'
+    )
+)

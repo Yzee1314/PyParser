@@ -37,6 +37,6 @@ class RedisManager(object):
         unikey = cls.get_instance_unikey(host, port, db)
         if unikey not in cls.instances:
             conn = redis.Redis(
-                host, port, db, decode_responses=True, **kwargs)
+                host, port, db, **kwargs)
             cls.instances[unikey] = conn
         return cls.instances[unikey]
