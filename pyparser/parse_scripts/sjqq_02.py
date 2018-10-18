@@ -6,9 +6,25 @@
 # @Date   : 10/17/2018, 2:53:15 PM
 
 
-class BaseParser(object):
+from . import Parser
 
-    app_id = '10'
 
-    def say_hello(self):
-        print('Hello 1', self.app_id)
+class BaseParser(Parser):
+
+    def parse(self, unikey, url, content, meta):
+        """
+            parse
+        """
+        crawl_time = meta.get('crawltime', None)
+        for word in content.split(' '):
+            if word == 'John':
+                status = False
+                msg = 'people name'
+            else:
+                status = True
+                msg = ''
+            yield status, {
+                'word': word,
+                'url': url,
+                'crawltime': crawl_time
+            }, msg

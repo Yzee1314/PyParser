@@ -20,6 +20,7 @@ def script_manager():
         Run script manager.
     """
     from parse_scripts import ScriptManager
+
     script_manager = ScriptManager()
     script_manager.run()
 

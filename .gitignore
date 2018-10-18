@@ -62,4 +62,5 @@ target/
 config.yml
 *.json
 celerybeat-schedule
-result/
+parse_result/
+*.yaml

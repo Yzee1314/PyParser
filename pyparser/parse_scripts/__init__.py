@@ -163,3 +163,24 @@ class ScriptManager(object):
         except KeyboardInterrupt:
             observer.stop()
         observer.join()
+
+
+class Parser(object):
+
+    def parse(self,
+              unikey,
+              url,
+              content,
+              meta):
+        """
+            Params:
+            * unikey:    (string) - A unique key of the content.
+            * url:       (string) - Where the content comes from.
+            * content:   (string) - Content.
+            * meta:      (dict)   - Other information of content.
+
+            Returns:
+            * ok:        (bool)                - the status of result
+            * result:    (dict|list|generator) - result
+        """
+        pass

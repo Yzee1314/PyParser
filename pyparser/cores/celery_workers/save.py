@@ -40,11 +40,11 @@ class SaveTask(Task):
         )
         self.result_save_dir_path = self.save_path_config.get(
             ConfigField.Path.result_save_dir_path,
-            os.path.join(PROJECT_PATH, 'result')
+            os.path.join(PROJECT_PATH, 'save_content')
         )
         self.log_save_dir_path = SAVE_WORKER_CONFIG.get(
             ConfigField.Path.log_save_dir_path,
-            os.path.join(PROJECT_PATH, 'log')
+            os.path.join(PROJECT_PATH, 'save_log')
         )
 
 

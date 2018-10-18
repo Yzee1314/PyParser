@@ -12,10 +12,8 @@
 """
 
 
-import simplejson as json
-
-from cores.celery_workers.save import save_to_local_file
 from cores.celery_workers.parser import parse
+from cores.celery_workers.save import save_to_local_file
 from utils.logger import LoggerManager
 
 
@@ -97,7 +95,7 @@ class ParseLayer(object):
         if need_save:
             if save_type == Values.SaveType.local_file:
                 save_to_local_file.apply_async(
-                    {
+                    kwargs={
                         'app_id': app_id,
                         'task_id': task_id,
                         'url': url,
@@ -110,6 +108,16 @@ class ParseLayer(object):
                 self.logger.info(
                     '[WrongSaveType] {}'.format(save_type)
                 )
+        parse.apply_async(
+            kwargs={
+                'app_id': app_id,
+                'task_id': task_id,
+                'unikey': unikey,
+                'url': url,
+                'content': content,
+                'meta': meta
+            }
+        )
 
     def output(self):
         """
