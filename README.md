@@ -17,7 +17,7 @@ PyParser框架正是为了解决以上遇到的问题，总的而言，PyParser�
 ---
 
 ## 架构设计
-<div style="align: center">![系统架构图](https://github.com/Beatles1314/PyParser/blob/dev/docs/imgs/architecture.png)
+<div style="align: center">![系统架构图](docs/imgs/architecture.png)
 </div>
 系统的主要部分有：
 * RedisMonitor：监控爬虫的结果队列，从爬虫的结果队列中获取结果并推送给下游处理。
