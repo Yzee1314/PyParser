@@ -25,3 +25,10 @@ PyParser框架正是为了解决以上遇到的问题，总的而言，PyParser�
 * parse_worker：数据解析消费者，加载解析脚本，对原始网页进行解析。
 * validate_worker：数据校验消费者，加载校验脚本，对解析结果进行进一步校验。
 * storage_worker：入库消费者，对通过校验的数据进行入库处理。
+
+---
+
+## To-Do-List
+
+- [ ] 增加Scrapy框架的结果生成器。
+- [ ] 增加Scrapy框架对接Pyparser结果生成Pipeline。
