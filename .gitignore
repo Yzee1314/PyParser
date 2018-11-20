@@ -63,4 +63,6 @@ config.yml
 *.json
 celerybeat-schedule
 parse_result/
+validate_failed/
+validate_success/
 *.yaml

@@ -10,7 +10,9 @@ from concurrent.futures import ProcessPoolExecutor
 import time
 import traceback
 
-from pyparser.cores.layers.parse import ParseLayerProducer
+import simplejson as json
+
+from pyparser.cores.processors.parse import ParseProcessor
 from pyparser.utils.redis import RedisManager
 from pyparser.utils.sys import run_in_executor
 from settings import REDIS_MONITOR_CONFIG
@@ -23,10 +25,6 @@ class ConfigField:
         host = 'host'
         port = 'port'
         db = 'db'
-
-    class ParseLayerProducerConfig:
-        root = 'parse_layer_config'
-        servers = 'servers'
 
 
 class RedisMonitor(object):
@@ -58,9 +56,9 @@ class ItemRedisMonitor(RedisMonitor):
     """
         Item-Redis监控模块
     """
-    def __init__(self, host, port, db, parse_layer_producer, **args):
+    def __init__(self, host, port, db, **args):
         super(ItemRedisMonitor, self).__init__(host, port, db, **args)
-        self.parse_layer_producer = parse_layer_producer
+        self.parse_processor = ParseProcessor()
 
     def run(self):
         """
@@ -79,7 +77,8 @@ class ItemRedisMonitor(RedisMonitor):
                     if not item:
                         continue
                     is_free = False
-                    self.parse_layer_producer.produce(item)
+                    item_obj = json.loads(item)
+                    self.parse_processor.handle(item_obj)
                 if is_free:
                     time.sleep(wait_result_interval)
             except Exception:
@@ -113,21 +112,12 @@ class ItemRedisMonitorManager(object):
                 }
             ]
         for redis_instance in redis_instance_list:
-            parse_layer_producer_config = redis_instance.get(
-                ConfigField.ParseLayerProducerConfig.root, {})
-            servers = parse_layer_producer_config.get(
-                ConfigField.ParseLayerProducerConfig.servers,
-                ['localhost:9092']
-            )
-            parse_layer_producer = ParseLayerProducer(
-                bootstrap_servers=servers)
             monitor = ItemRedisMonitor(
                 host=redis_instance.get(
                     ConfigField.RedisInstanceConfig.host, 'localhost'),
                 port=redis_instance.get(
                     ConfigField.RedisInstanceConfig.port, 6379),
                 db=redis_instance.get(ConfigField.RedisInstanceConfig.db, 0),
-                parse_layer_producer=parse_layer_producer
             )
             self.monitors.append(monitor)
 

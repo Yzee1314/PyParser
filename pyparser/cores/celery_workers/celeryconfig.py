@@ -22,7 +22,9 @@ CELERY_CONFIG = {
 
     'imports': (
         'cores.celery_workers.save',
-        'cores.celery_workers.parser'
+        'cores.celery_workers.parser',
+        'cores.celery_workers.validator',
+        'cores.celery_workers.storage'
     ),
 
     # queues
@@ -42,6 +44,16 @@ CELERY_CONFIG = {
             Exchange('parser', type='topic'),
             routing_key='parser.#'
         ),
+        Queue(
+            'validator',
+            Exchange('validator', type='topic'),
+            routing_key='validator.#'
+        ),
+        Queue(
+            'storage',
+            Exchange('storage', type='topic'),
+            routing_key='storage.#'
+        )
     },
 
     # routes
@@ -53,6 +65,14 @@ CELERY_CONFIG = {
         'cores.celery_workers.parser.parse': {
             'queue': 'parser',
             'routing_key': 'parser.parser'
+        },
+        'cores.celery_workers.validator.validate': {
+            'queue': 'validator',
+            'routing_key': 'validator.validate'
+        },
+        'cores.celery_workers.validator.storage': {
+            'queue': 'storage',
+            'routing_key': 'storage.storage'
         }
     }
 }

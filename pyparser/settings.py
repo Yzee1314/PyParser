@@ -40,6 +40,20 @@ PARSER_WORKER_CONFIG = load_yaml_config(
         'parse_worker.yaml'
     )
 )
+VALIDATE_WORKER_CONFIG = load_yaml_config(
+    os.path.join(
+        PROJECT_PATH,
+        'configs',
+        'validate_worker.yaml'
+    )
+)
+STORAGE_WORKER_CONFIG = load_yaml_config(
+    os.path.join(
+        PROJECT_PATH,
+        'configs',
+        'storage_worker.yaml'
+    )
+)
 SCRIPT_MANAGER_CONFIG = load_yaml_config(
     os.path.join(
         PROJECT_PATH,

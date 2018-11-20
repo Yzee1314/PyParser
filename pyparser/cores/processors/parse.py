@@ -49,14 +49,14 @@ class Values:
         oss_file = 'oss_file'
 
 
-class ParseLayer(object):
+class ParseProcessor(object):
 
     def __init__(self):
         self.logger = LoggerManager.get_logger(__file__)
 
-    def input(self, item):
+    def handle(self, item):
         """
-            Parse layer input
+            handle
         """
         task_config = item.pop(
             ConfigField.TaskConfig.root, {})
@@ -118,9 +118,3 @@ class ParseLayer(object):
                 'meta': meta
             }
         )
-
-    def output(self):
-        """
-            Parse layer output
-        """
-        pass

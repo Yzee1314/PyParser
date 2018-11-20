@@ -12,6 +12,7 @@ from celery import Task
 import simplejson as json
 
 from . import app
+from cores.celery_workers.validator import validate
 from parse_scripts import ScriptManager
 from settings import PARSER_WORKER_CONFIG
 from utils.logger import LoggerManager
@@ -19,8 +20,8 @@ from utils.logger import LoggerManager
 
 class ConfigField:
 
-    class ParseResult:
-        root = 'parse_result'
+    class Path:
+        root = 'path'
         parse_result_dir_path = 'parse_result_dir_path'
         parse_failed_log_dir_path = 'parse_failed_log_dir_path'
 
@@ -33,16 +34,16 @@ class ParseTask(Task):
         self.logger = LoggerManager.get_logger(__file__)
         self.script_manager = ScriptManager()
         self.parse_result_config = PARSER_WORKER_CONFIG.get(
-            ConfigField.ParseResult.root,
+            ConfigField.Path.root,
             {}
         )
         self.parse_result_dir_path = self.parse_result_config.get(
-            ConfigField.ParseResult.parse_result_dir_path,
+            ConfigField.Path.parse_result_dir_path,
             'parse_result'
         )
         self.parse_failed_log_dir_path = self.parse_result_config.get(
-            ConfigField.ParseResult.parse_failed_log_dir_path,
-            'parse_filed_log'
+            ConfigField.Path.parse_failed_log_dir_path,
+            'parse_failed_log'
         )
 
 
@@ -90,6 +91,13 @@ def parse(self,
                 failed_message['result'] = result
                 with open(task_parse_failed_log_path, 'a') as fp:
                     fp.write(json.dumps(failed_message) + '\n')
+        validate.apply_async(
+            kwargs={
+                'app_id': app_id,
+                'task_id': task_id,
+                'unikey': unikey
+            }
+        )
     except Exception as e:
         traceback.print_exc()
         failed_message['error'] = repr(e)

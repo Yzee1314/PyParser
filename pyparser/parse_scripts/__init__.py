@@ -45,7 +45,6 @@ class ScriptWatchHandler(FileSystemEventHandler):
             return
         app_id = os.path.basename(event.src_path).rstrip('.py')
         parser = ScriptManager.load_parser_instance(app_id)
-        print(parser.app_id)
         if parser:
             ScriptManager.pickle_parser_to_redis(app_id, parser)
             ScriptManager.update_script_status(
@@ -152,10 +151,11 @@ class ScriptManager(object):
         if not script_dir_path:
             script_dir_path = os.path.join(
                 PROJECT_PATH, 'parse_scripts')
+        print(script_dir_path)
         event_handler = ScriptWatchHandler()
         observer = Observer()
         observer.schedule(
-            event_handler, path=script_dir_path, recursive=False)
+            event_handler, path=script_dir_path, recursive=True)
         observer.start()
         try:
             while True:
@@ -166,6 +166,21 @@ class ScriptManager(object):
 
 
 class Parser(object):
+
+    class Model(object):
+        uri = 'mongodb://localhost:27017/'
+        db = None
+        col = None
+
+    def get_model(self):
+        """
+            Return the parser model
+        """
+        if not hasattr(self, 'model'):
+            self.model = self.Model()
+        if not self.model:
+            self.model = self.Model()
+        return self.model
 
     def parse(self,
               unikey,
