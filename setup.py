@@ -23,7 +23,7 @@ setup(
     url='https://github.com/Beatles1314/PyParser',
     packages=find_packages('pyparser', exclude=('tests', 'tests.*')),
     include_package_data=True,  # read other files from MANIFEST.in
-    python_requires='>=3,6',
+    python_requires='==3,6',
     install_requires=[
         'amqp>=2.3.2',
         'argh>=0.26.2',
