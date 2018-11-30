@@ -17,13 +17,13 @@ from celery import Task
 import simplejson as json
 
 from . import app
-from parse_scripts import ScriptManager
-from settings import (
+from pyparser.parse_scripts import ScriptManager
+from pyparser.settings import (
     STORAGE_WORKER_CONFIG,
     VALIDATE_WORKER_CONFIG
 )
-from utils.mongo import MongoManager
-from utils.logger import LoggerManager
+from pyparser.utils.mongo import MongoManager
+from pyparser.utils.logger import LoggerManager
 
 
 class ConfigField:

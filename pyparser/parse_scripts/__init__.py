@@ -13,8 +13,8 @@ import time
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from settings import PROJECT_PATH, SCRIPT_MANAGER_CONFIG
-from utils.redis import RedisManager
+from pyparser.settings import PROJECT_PATH, SCRIPT_MANAGER_CONFIG
+from pyparser.utils.redis import RedisManager
 
 
 class ConfigField:
@@ -94,7 +94,7 @@ class ScriptManager(object):
             Load module
         """
         module = importlib.import_module(
-            'parse_scripts.{}'.format(app_id))
+            'pyparser.parse_scripts.{}'.format(app_id))
         if reload:
             importlib.reload(module)
         for attr in dir(module):

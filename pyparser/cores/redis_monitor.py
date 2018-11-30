@@ -12,10 +12,10 @@ import traceback
 
 import simplejson as json
 
-from cores.processors.parse import ParseProcessor
-from utils.redis import RedisManager
-from utils.sys import run_in_executor
-from settings import REDIS_MONITOR_CONFIG
+from pyparser.cores.processors.parse import ParseProcessor
+from pyparser.utils.redis import RedisManager
+from pyparser.utils.sys import run_in_executor
+from pyparser.settings import REDIS_MONITOR_CONFIG
 
 
 class ConfigField:

@@ -12,9 +12,9 @@
 """
 
 
-from cores.celery_workers.parser import parse
-from cores.celery_workers.save import save_to_local_file
-from utils.logger import LoggerManager
+from pyparser.cores.celery_workers.parser import parse
+from pyparser.cores.celery_workers.save import save_to_local_file
+from pyparser.utils.logger import LoggerManager
 
 
 class ConfigField:

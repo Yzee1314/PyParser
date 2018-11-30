@@ -12,10 +12,10 @@ from celery import Task
 import simplejson as json
 
 from . import app
-from cores.celery_workers.validator import validate
-from parse_scripts import Parser, ScriptManager
-from settings import PARSER_WORKER_CONFIG
-from utils.logger import LoggerManager
+from pyparser.cores.celery_workers.validator import validate
+from pyparser.parse_scripts import Parser, ScriptManager
+from pyparser.settings import PARSER_WORKER_CONFIG
+from pyparser.utils.logger import LoggerManager
 
 
 class ConfigField:

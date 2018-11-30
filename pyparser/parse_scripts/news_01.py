@@ -5,12 +5,11 @@
 # @Author : PengYingzhi
 # @Date   : 10/17/2018, 2:53:15 PM
 
-import random as rd
 
 from pyquery import PyQuery
 
 from . import Parser
-from utils.string import md5
+from pyparser.utils.string import md5
 
 
 class BaseParser(Parser):

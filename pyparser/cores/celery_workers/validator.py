@@ -14,12 +14,12 @@ import simplejson as json
 
 from . import app
 from .storage import storage
-from parse_scripts import ScriptManager
-from settings import (
+from pyparser.parse_scripts import ScriptManager
+from pyparser.settings import (
     PARSER_WORKER_CONFIG,
     VALIDATE_WORKER_CONFIG
 )
-from utils.logger import LoggerManager
+from pyparser.utils.logger import LoggerManager
 
 
 class ConfigField:

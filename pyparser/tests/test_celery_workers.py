@@ -35,7 +35,7 @@ def test_parse_worker():
         test_parse_worker
     """
     from faker import Factory
-    from cores.celery_workers.parser import parse
+    from pyparser.cores.celery_workers.parser import parse
 
     faker = Factory.create()
     content = ' '.join([faker.name() for _ in range(50)])

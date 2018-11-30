@@ -12,8 +12,8 @@ from celery import Task
 import simplejson as json
 
 from . import app
-from settings import PROJECT_PATH, SAVE_WORKER_CONFIG
-from utils.logger import (
+from pyparser.settings import PROJECT_PATH, SAVE_WORKER_CONFIG
+from pyparser.utils.logger import (
     FormatFactory,
     FileLoggerFactory,
     LoggerManager

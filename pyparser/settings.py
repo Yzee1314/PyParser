@@ -7,7 +7,7 @@
 
 import os
 
-from utils.yaml import load_yaml_config
+from pyparser.utils.yaml import load_yaml_config
 
 
 def get_project_path():

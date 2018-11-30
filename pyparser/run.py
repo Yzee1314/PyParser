@@ -19,7 +19,7 @@ def redis_monitors():
     """
         Run redis monitors.
     """
-    from cores.redis_monitor import ItemRedisMonitorManager
+    from pyparser.cores.redis_monitor import ItemRedisMonitorManager
 
     manager = ItemRedisMonitorManager()
     manager.run()
@@ -30,7 +30,7 @@ def script_manager():
     """
         Run script manager.
     """
-    from parse_scripts import ScriptManager
+    from pyparser.parse_scripts import ScriptManager
 
     script_manager = ScriptManager()
     script_manager.run()
