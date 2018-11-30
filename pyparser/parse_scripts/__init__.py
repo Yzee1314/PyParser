@@ -83,6 +83,7 @@ class ScriptManager(object):
                 app_id = fname.rstrip('.py')
                 parser = ScriptManager.load_parser_instance(
                     app_id, reload=False)
+                self.pickle_parser_to_redis(app_id, parser)
                 ScriptManager.update_script_status(
                     app_id, ScriptManager.Status.no_change)
                 self.parser_instances[app_id] = parser
