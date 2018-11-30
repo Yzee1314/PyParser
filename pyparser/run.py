@@ -15,6 +15,17 @@ def main():
 
 
 @main.command()
+def redis_monitors():
+    """
+        Run redis monitors.
+    """
+    from cores.redis_monitor import ItemRedisMonitorManager
+
+    manager = ItemRedisMonitorManager()
+    manager.run()
+
+
+@main.command()
 def script_manager():
     """
         Run script manager.
