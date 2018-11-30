@@ -13,7 +13,7 @@ import simplejson as json
 
 from . import app
 from cores.celery_workers.validator import validate
-from parse_scripts import ScriptManager
+from parse_scripts import Parser, ScriptManager
 from settings import PARSER_WORKER_CONFIG
 from utils.logger import LoggerManager
 
@@ -54,7 +54,7 @@ def parse(self,
           unikey,
           url,
           content,
-          meta):
+          result_meta):
     task_parse_result_dir = os.path.join(
         self.parse_result_dir_path,
         app_id,
@@ -81,7 +81,9 @@ def parse(self,
     }
     try:
         parser = self.script_manager.get_parser_instance(app_id)
-        for ok, result, msg in parser.parse(unikey, url, content, meta):
+        for ok, result, msg in parser.parse(unikey, url, content, result_meta):
+            if msg == Parser.ResultType.IGNORE:
+                continue
             if ok:
                 result_path = os.path.join(task_parse_result_dir, unikey)
                 with open(result_path, 'a') as fp:

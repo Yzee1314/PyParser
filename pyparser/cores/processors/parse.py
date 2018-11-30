@@ -20,21 +20,18 @@ from utils.logger import LoggerManager
 class ConfigField:
 
     class TaskConfig:
-        root = 'task_config'
         app_id = 'app_id'
         task_id = 'task_id'
 
     class SaveConfig:
-        root = 'save_config'
         need_save = 'need_save'
         save_type = 'save_type'
 
     class ResultInfo:
-        root = 'result_info'
         url = 'url'
-        uniqkey = 'uniqkey'
+        unikey = 'unikey'
         content = 'content'
-        meta = 'meta'
+        result_meta = 'result_meta'
         timestamp = 'timestamp'
 
     class ParseConfig:
@@ -58,37 +55,31 @@ class ParseProcessor(object):
         """
             handle
         """
-        task_config = item.pop(
-            ConfigField.TaskConfig.root, {})
-        app_id = task_config.get(
+        app_id = item.get(
             ConfigField.TaskConfig.app_id, None)
-        task_id = task_config.get(
+        task_id = item.get(
             ConfigField.TaskConfig.task_id, None)
-        if not app_id or not task_config:
+        if (not app_id) or (not task_id):
             self.logger.info(
                 '[EmptyTaskConfig] {} {}'.format(task_id, app_id)
             )
             return
-        result_info = item.pop(
-            ConfigField.ResultInfo.root, {})
-        url = result_info.get(
-            ConfigField.ResultInfo.root, None)
-        unikey = result_info.get(
-            ConfigField.ResultInfo.uniqkey, None)
-        content = result_info.get(
+        url = item.get(
+            ConfigField.ResultInfo.url, None)
+        unikey = item.get(
+            ConfigField.ResultInfo.unikey, None)
+        content = item.get(
             ConfigField.ResultInfo.content, None)
-        meta = result_info.get(
-            ConfigField.ResultInfo.meta, None)
+        result_meta = item.get(
+            ConfigField.ResultInfo.result_meta, None)
         if not unikey or not content:
             self.logger.info(
                 '[EmptyResultInfo] {} {}'.format(unikey, content)
             )
             return
-        persist_config = item.pop(
-            ConfigField.SaveConfig.root, {})
-        need_save = persist_config.get(
+        need_save = item.get(
             ConfigField.SaveConfig.need_save, True)
-        save_type = persist_config.get(
+        save_type = item.get(
             ConfigField.SaveConfig.save_type,
             Values.SaveType.local_file
         )
@@ -101,7 +92,7 @@ class ParseProcessor(object):
                         'url': url,
                         'unikey': unikey,
                         'content': content,
-                        'meta': meta
+                        'result_meta': result_meta
                     }
                 )
             else:
@@ -115,6 +106,6 @@ class ParseProcessor(object):
                 'unikey': unikey,
                 'url': url,
                 'content': content,
-                'meta': meta
+                'result_meta': result_meta
             }
         )

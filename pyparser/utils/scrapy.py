@@ -7,8 +7,12 @@
 
 from copy import deepcopy
 from datetime import datetime
+from hashlib import md5 as internal_md5
 
-from utils.string import md5
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 
 class Values:
@@ -35,6 +39,21 @@ class ConfigField:
         result_meta = 'result_meta'
 
 
+def md5(string):
+    """
+    Params:
+    * string        (str) - original value
+
+    Returns:
+    * md5_value:    (str) - new value
+    """
+    m = internal_md5()
+    if isinstance(string, (str, )):
+        string = string.encode('utf-8')
+    m.update(string)
+    return m.hexdigest().deocde('utf-8')
+
+
 class ResultGenerator(object):
     """
         Generate result from `Scrapy.Response`
@@ -53,7 +72,7 @@ class ResultGenerator(object):
         url = meta.pop(ConfigField.ResultField.url, None) \
             or response.request.url or response.url
         content = meta.pop(ConfigField.ResultField.content, None) \
-            or response.body
+            or response.text
         app_id = meta.pop(ConfigField.ResultField.app_id, None)
         if not app_id:
             # This is a necessary field
@@ -72,12 +91,6 @@ class ResultGenerator(object):
             ConfigField.ResultField.unikey: unikey,
             ConfigField.ResultField.url: url,
             ConfigField.ResultField.content: content,
-            ConfigField.ResultField.meta: result_meta
+            ConfigField.ResultField.result_meta: result_meta
         }
 
-
-class PyParserPipeline(object):
-    """
-        pyparser pipeline
-    """
-    pass

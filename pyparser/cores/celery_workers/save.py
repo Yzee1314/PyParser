@@ -55,7 +55,7 @@ def save_to_local_file(self,
                        unikey,
                        content,
                        url,
-                       meta=None):
+                       result_meta=None):
     """
         Save content to local file
 
@@ -65,7 +65,7 @@ def save_to_local_file(self,
         * unikey
         * content
         * url
-        * meta
+        * result_meta
     """
     result_dir_path = os.path.join(
         self.result_save_dir_path, app_id, task_id)
@@ -83,7 +83,7 @@ def save_to_local_file(self,
         'task_id': task_id,
         'unikey': unikey,
         'url': url,
-        'meta': meta
+        'result_meta': result_meta
     }
     with open(log_path, 'a') as fp:
         fp.write(json.dumps(record) + '\n')

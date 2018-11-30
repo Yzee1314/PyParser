@@ -167,6 +167,10 @@ class ScriptManager(object):
 
 class Parser(object):
 
+    class ResultType:
+        IGNORE = 'IGNORE'
+        NORMAL = 'NORMAL'
+
     class Model(object):
         uri = 'mongodb://localhost:27017/'
         db = None
